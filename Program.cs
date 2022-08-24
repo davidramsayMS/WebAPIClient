@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Net;
+using System.Runtime.CompilerServices;
 
 namespace WebAPIClient
 {
@@ -15,19 +16,31 @@ namespace WebAPIClient
     {
         static async Task Main(string[] args)
         {
-            await SendPost();
+            var logName = GenerateName();            
+            StreamWriter streamWriter = new StreamWriter(@"C:/Users/davidramsay/Documents/" + logName + ".csv");
+
+            await SendPost(streamWriter);
+
+            //exit sequence
+            Console.WriteLine("\nPress any key to exit, then close window.");
+            Console.ReadKey();
             Environment.Exit(0);
+
         } 
 
-        private static async Task SendPost()
+        private static string GenerateName()
+        {
+            var date = (DateTime.UtcNow).ToString(@"dd-MM-yyyy_HH.mm.ss");
+            return date;           
+        }
+
+        private static async Task SendPost(StreamWriter streamWriter)
         {
             // set variables for your destination
             var webApiUrl = "https://shuledota.azure-api.net";
             var requestPath = "/ShuleFun/TurbineRepair";
             var requestURI= (webApiUrl+requestPath);
-
-            
-                       
+ 
         // Send Post
             // instantiate HTTP client object
             var client = new HttpClient();
@@ -53,7 +66,6 @@ namespace WebAPIClient
 
 
             //begin send post loop
-
             while (Console.KeyAvailable == false)
                 {            
                 // start timer, send request, stop timer.
@@ -73,22 +85,24 @@ namespace WebAPIClient
                     TimeSpan ts = stopWatch.Elapsed;
 
                     // Format and display the TimeSpan value.
-                string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
-                    ts.Hours, ts.Minutes, ts.Seconds,
+                string elapsedTime = String.Format("{0:00}.{1:00}",
+                    ts.Seconds,
                     ts.Milliseconds / 10);
 
                     // run through the answer and decode each of your properties, write to console then pause for user input.
                 Console.WriteLine(response);
+                string responseString = response.ToString();
+                responseString = responseString + "Time:" + ts.ToString();
+                streamWriter.WriteLine(responseString);
+                //Console.WriteLine(response.Content.ToString());
                 Console.WriteLine(ts);
+                //Array 
                     
-                    // you can use the following to print out any given header: "Console.WriteLine(client.DefaultRequestHeaders.AcceptEncoding);"
-
-                    Console.WriteLine("PRESS ANY KEY TO STOP.");
+                // you can use the following to print out any given header: "Console.WriteLine(client.DefaultRequestHeaders.AcceptEncoding);"
 
                    }
-            Console.WriteLine("\n\n\n=======================================\nPress any key to exit, then close window.");
-            var read = Console.ReadLine();
 
+            
         }
         
     }

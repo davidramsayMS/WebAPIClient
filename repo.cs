@@ -9,6 +9,8 @@ namespace WebAPIClient
     {
         [JsonPropertyName("message")]
         public string? Message { get; set; }
+        [JsonPropertyName("statusCode")]
+        public string? StatusCode { get; set; }
 
         ////for each of the elements you want to decode, create a constructor for a nullable property.
         //[JsonPropertyName("description")]
