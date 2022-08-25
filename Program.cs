@@ -16,8 +16,15 @@ namespace WebAPIClient
     {
         static async Task Main(string[] args)
         {
-            var logName = GenerateName();            
-            StreamWriter streamWriter = new StreamWriter(@"C:/Users/davidramsay/Documents/" + logName + ".csv");
+            var logName = GenerateName();
+            string directory = Path.Combine((Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)),"APILogger");
+
+            //Create  directory
+            if (!Directory.Exists(directory))
+            { 
+                Directory.CreateDirectory(directory);
+            }
+            StreamWriter streamWriter = new StreamWriter(directory + logName + ".csv");
 
             await SendPost(streamWriter);
 
@@ -92,7 +99,7 @@ namespace WebAPIClient
                     // run through the answer and decode each of your properties, write to console then pause for user input.
                 Console.WriteLine(response);
                 string responseString = response.ToString();
-                responseString = responseString + "Time:" + ts.ToString();
+                responseString = responseString + "\n" + "Time: " + ts.ToString();
                 streamWriter.WriteLine(responseString);
                 //Console.WriteLine(response.Content.ToString());
                 Console.WriteLine(ts);
