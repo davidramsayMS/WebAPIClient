@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Net.Http.Json;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Collections.Immutable;
 
 namespace WebAPIClient
 {
@@ -16,8 +17,8 @@ namespace WebAPIClient
         static async Task Main(string[] args)
         {
             var logName = GenerateName();
-            string directory = Path.Combine((Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)),"APILogger");
-
+            string directory = (Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+            directory = directory + @"\APILogger\";
             //Create  directory
             if (!Directory.Exists(directory))
             { 
