@@ -7,26 +7,26 @@ namespace WebAPIClient
 {
     public class Response
     {
-        [JsonPropertyName("message")]
-        public string? Message { get; set; }
-        [JsonPropertyName("statusCode")]
+        [JsonPropertyName("ReasonPhrase")]
+        public string? ReasonPhrase { get; set; }
+
+        [JsonPropertyName("StatusCode")]
         public string? StatusCode { get; set; }
 
-        ////for each of the elements you want to decode, create a constructor for a nullable property.
-        //[JsonPropertyName("description")]
-        //public string? Description { get; set; }
+        [JsonPropertyName("Version")]
+        public string? Version { get; set; }
 
-        //[JsonPropertyName("html_url")]
-        //public Uri? GitHubHomeUrl { get; set; }
+        [JsonPropertyName("Content")]
+        public string? Content { get; set; }
 
-        //[JsonPropertyName("homepage")]
-        //public Uri? Homepage { get; set; }
+        [JsonPropertyName("Headers")]
+        public string? Headers { get; set; }
 
-        //[JsonPropertyName("watchers")]
-        //public int? Watchers { get; set; }
+        [JsonPropertyName("Request-Context")]
+        public string? RequestContext { get; set; }
 
-        //[JsonPropertyName("pushed_at")]
-        //public DateTime? LastPushUtc { get; set; }
+        [JsonPropertyName("Content-Length")]
+        public string? ContentLength { get; set; }
 
     }
 }

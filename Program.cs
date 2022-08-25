@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System;
@@ -47,19 +46,18 @@ namespace WebAPIClient
             var webApiUrl = "https://shuledota.azure-api.net";
             var requestPath = "/ShuleFun/TurbineRepair";
             var requestURI= (webApiUrl+requestPath);
- 
-        // Send Post
+
             // instantiate HTTP client object
             var client = new HttpClient();
             client.BaseAddress = new Uri(webApiUrl);
             
-            // define your content
+            // define and encode content
             var content = new Dictionary<string, string>
             {
                 {"hours", "6"},
                 {"capacity", "2500"}
             };
-            var body = new FormUrlEncodedContent(content);
+            var body = new StringContent(JsonSerializer.Serialize(content));
 
             // Use the following to add headers: "client.DefaultRequestHeaders.<header name>.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("<value>"));
 
@@ -77,33 +75,31 @@ namespace WebAPIClient
                 {            
                 // start timer, send request, stop timer.
 
-                    // Instantiate stopwatch and start recording total request time.
-                    Stopwatch stopWatch = new Stopwatch();
-                            stopWatch.Start();
+                // Instantiate stopwatch and start recording total request time.
+                Stopwatch stopWatch = new Stopwatch();
+                        stopWatch.Start();
 
-                    var response = await client.PostAsync(requestPath, body);
-                    var resultContent = await response.Content.ReadAsStreamAsync();
-                    StreamReader streamReader = new StreamReader(resultContent);
-                    Console.WriteLine(streamReader.ReadToEnd());
 
-                    stopWatch.Stop();
+                var response = new HttpResponseMessage();
+                response = await client.PostAsync(requestPath, body);
 
-                    // Get the elapsed time as a TimeSpan value.
-                    TimeSpan ts = stopWatch.Elapsed;
+                stopWatch.Stop();
 
-                    // Format and display the TimeSpan value.
-                string elapsedTime = String.Format("{0:00}.{1:00}",
-                    ts.Seconds,
-                    ts.Milliseconds / 10);
+                // Get the elapsed time as a TimeSpan value.
+                TimeSpan ts = stopWatch.Elapsed;
 
-                    // run through the answer and decode each of your properties, write to console then pause for user input.
-                Console.WriteLine(response);
-                string responseString = response.ToString();
-                responseString = responseString + "\n" + "Time: " + ts.ToString();
-                streamWriter.WriteLine(responseString);
-                //Console.WriteLine(response.Content.ToString());
-                Console.WriteLine(ts);
-                //Array 
+                // Format and display the TimeSpan value.
+                string elapsedTime = ts.Milliseconds.ToString();
+
+                //build and write CSV table row to table and console 
+                StringBuilder csvConcatJob = new StringBuilder();
+                csvConcatJob.Append(response.StatusCode.ToString() + ",").Append(response.ReasonPhrase.ToString() + ",").Append(response.Version.ToString() + ",")
+                    .Append(response.Headers.Date.Value.ToString() + ",").Append(response.IsSuccessStatusCode.ToString() + ",").Append(response.Content.ToString() + ",")
+                    .Append(response.TrailingHeaders.ToString() + ",").Append(elapsedTime);
+                streamWriter.WriteLine(csvConcatJob);
+
+                Console.WriteLine(csvConcatJob);
+
                     
                 // you can use the following to print out any given header: "Console.WriteLine(client.DefaultRequestHeaders.AcceptEncoding);"
 
